@@ -35,7 +35,7 @@ class EmployeeResource extends Resource
                             ->searchable()
                             ->preload()
                             ->live()
-                            ->afterStateUpdated(function (Set $set){ 
+                            ->afterStateUpdated(function (Set $set) {
                                 $set('state_id', null);
                                 $set('city_id', null);
                             })
@@ -47,7 +47,7 @@ class EmployeeResource extends Resource
                             ->required()
                             ->searchable()
                             ->live()
-                            ->afterStateUpdated(fn(Set $set)=> $set('city_id', null))
+                            ->afterStateUpdated(fn (Set $set) => $set('city_id', null))
                             ->preload()
                             ->native(false),
                         Forms\Components\Select::make('city_id')
@@ -74,12 +74,13 @@ class EmployeeResource extends Resource
                         Forms\Components\TextInput::make('first_name')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('last_name')
-                            ->required()
-                            ->maxLength(255),
                         Forms\Components\TextInput::make('middle_name')
                             ->required()
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('last_name')
+                            ->required()
+                            ->maxLength(255),
+
 
                     ])->columns(3),
 
@@ -96,9 +97,13 @@ class EmployeeResource extends Resource
 
                 Forms\Components\Section::make('Dates')
                     ->schema([
-                        Forms\Components\DatePicker::make('date_hired')
-                            ->required(),
                         Forms\Components\DatePicker::make('date_of_birth')
+                            ->native(false)
+                            ->displayFormat('d/m/Y')
+                            ->required(),
+                        Forms\Components\DatePicker::make('date_hired')
+                            ->native(false)
+                            ->displayFormat('d/m/Y')
                             ->required(),
                     ])->columns(2),
 
@@ -109,25 +114,11 @@ class EmployeeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('country_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('state_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('city_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('department_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('first_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('last_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('middle_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('last_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('zip_code')
                     ->searchable(),

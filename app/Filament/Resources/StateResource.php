@@ -34,14 +34,14 @@ class StateResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                ->required()
-                ->maxLength(255),
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\Select::make('country_id')
-                ->relationship(name: 'country', titleAttribute: 'name')
-                ->required()
-                ->searchable()
-                ->preload()
-                ->native(false),
+                    ->relationship(name: 'country', titleAttribute: 'name')
+                    ->required()
+                    ->searchable()
+                    ->preload()
+                    ->native(false),
             ]);
     }
 
@@ -49,13 +49,13 @@ class StateResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('State Name')
+                    ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('country_id')
+                Tables\Columns\TextColumn::make('country.name')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

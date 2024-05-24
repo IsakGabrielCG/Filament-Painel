@@ -32,14 +32,14 @@ class CityResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                ->required()
-                ->maxLength(255),
-                Forms\Components\Select::make('state_id')
-                ->relationship(name: 'state', titleAttribute: 'name')
-                ->required()
-                ->searchable()
-                ->preload()
-                ->native(false),
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Select::make('state.name')
+                    ->relationship(name: 'state', titleAttribute: 'name')
+                    ->required()
+                    ->searchable()
+                    ->preload()
+                    ->native(false),
             ]);
     }
 
@@ -47,13 +47,11 @@ class CityResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('state_id')
+                Tables\Columns\TextColumn::make('state.name')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -75,6 +73,7 @@ class CityResource extends Resource
                 ])
 
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
