@@ -17,3 +17,4 @@ class ViewCity extends ViewRecord
         ];
     }
 }
+    

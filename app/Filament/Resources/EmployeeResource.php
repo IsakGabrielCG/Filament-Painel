@@ -7,12 +7,19 @@ use App\Models\City;
 use App\Models\Employee;
 use App\Models\State;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class EmployeeResource extends Resource
@@ -114,13 +121,19 @@ class EmployeeResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('country.name')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('first_name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('middle_name')
                     ->searchable()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('last_name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('zip_code')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date_of_birth')
@@ -140,7 +153,30 @@ class EmployeeResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('Department')
+                    ->relationship('department', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Filter by Department')
+                    ->indicator('Department'),
+
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from'),
+                        DatePicker::make('created_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -156,6 +192,43 @@ class EmployeeResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Employee Info')
+                    ->schema([
+                        Section::make('Relationships')
+                            ->schema([
+                                TextEntry::make('country.name')->label('Country Name'),
+                                TextEntry::make('state.name')->label('State Name'),
+                                TextEntry::make('city.name')->label('City Name'),
+                                TextEntry::make('department.name')->label('Department Name'),
+                            ])->columns(4),
+
+                        Section::make('User Name')
+                            ->schema([
+                                TextEntry::make('first_name')->label('First Name'),
+                                TextEntry::make('middle_name')->label('Middle Name'),
+                                TextEntry::make('last_name')->label('Last Name'),
+                            ])->columns(3),
+
+                        Section::make('User Address')
+                            ->schema([
+                                TextEntry::make('address')->label('Address'),
+                                TextEntry::make('zip_code')->label('Zip Code'),
+                            ])->columns(2),
+
+                        Section::make('Dates')
+                            ->schema([
+                                TextEntry::make('date_of_birth')->label('Date of birth')->date(),
+                                TextEntry::make('date_hired')->label('Date hired'),
+                            ])->columns(3)
+                    ]),
+
+            ]);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -168,7 +241,7 @@ class EmployeeResource extends Resource
         return [
             'index' => Pages\ListEmployees::route('/'),
             'create' => Pages\CreateEmployee::route('/create'),
-            'view' => Pages\ViewEmployee::route('/{record}'),
+            'view' => Pages\ViewEmployee::route('/{record}'), // responsavel por fazer a mostragem em outra pagina
             'edit' => Pages\EditEmployee::route('/{record}/edit'),
         ];
     }

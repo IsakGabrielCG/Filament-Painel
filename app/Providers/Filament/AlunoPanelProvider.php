@@ -18,40 +18,27 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-class AdminPanelProvider extends PanelProvider
+class AlunoPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
-            ->id('admin')
-            ->path('')
+            ->id('aluno')
+            ->path('aluno')
             ->login()
             ->registration()
-            ->colors([ // these are the colors of the panel
-                'danger' => Color::Red,
-                'gray' => Color::Slate,
-                'info' => Color::Blue,
-                'primary' => Color::Indigo,
-                'success' => Color::Emerald,
-                'warning' => Color::Orange,
+            ->colors([
+                'primary' => Color::Amber,
             ])
-            ->topNavigation()
-            
-            ->font('Inter')
-            ->brandLogo(asset('images/fireBlue3.png')) // this is the logo
-            ->brandLogoHeight('3rem')
-            ->darkModeBrandLogo(asset('images/fireBlue3.png'))
-            ->favicon(asset('images/fireBlue3.png'))
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverResources(in: app_path('Filament/Aluno/Resources'), for: 'App\\Filament\\Aluno\\Resources')
+            ->discoverPages(in: app_path('Filament/Aluno/Pages'), for: 'App\\Filament\\Aluno\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Aluno/Widgets'), for: 'App\\Filament\\Aluno\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                
+                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
