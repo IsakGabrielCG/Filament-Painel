@@ -5,10 +5,13 @@ namespace App\Providers\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Pages;
+use Filament\Pages\Auth\EditProfile;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -27,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('')
             ->login()
+            ->profile()
             ->registration()
             ->colors([ // these are the colors of the panel
                 'danger' => Color::Red,
@@ -37,7 +41,15 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Orange,
             ])
             ->topNavigation()
+            ->maxContentWidth(MaxWidth::Full)
             
+            ->spa() //single page aplication
+            ->unsavedChangesAlerts() // alert for unsaved changes
+
+            // ->userMenuItems(['profile' => MenuItem::make()->label('Edit profile'),]) this is the user menu with the name Edit profile
+
+            ->profile(EditProfile::class) // do the same as the userMenuItems
+
             ->font('Inter')
             ->brandLogo(asset('images/fireBlue3.png')) // this is the logo
             ->brandLogoHeight('3rem')

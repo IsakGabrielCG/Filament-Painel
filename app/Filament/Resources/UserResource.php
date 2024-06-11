@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -44,6 +45,9 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+
+                //Tables\Columns\ToggleColumn::make('is_admin'),
+                //Tables\Columns\CheckboxColumn::make('is_admin'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
@@ -94,3 +98,4 @@ class UserResource extends Resource
         ];
     }
 }
+//fabricio franco
